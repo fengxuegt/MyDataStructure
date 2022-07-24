@@ -77,6 +77,44 @@ public:
         cout << endl;
     }
 
+    // 不带权值的最短路径问题  广度优先遍历
+    void shortPath(int start, int end) {
+        queue<int> q;
+        vector<int> path(vertics.size(), 0);
+        vector<bool> visited(vertics.size(), false);
+        q.push(start);
+        visited[start] = true;
+        while (!q.empty()) {
+            int top = q.front();
+            path.push_back(top);
+            cout << vertics[top].m_name << " ";
+            if (top == end) {
+                break;
+            }
+            q.pop();
+            for (auto i : vertics[top].m_adjList) {
+                if (visited[i] != true) {
+                    q.push(i);
+                    visited[i] = true;
+                    // 当前节点记录前面节点是哪个
+                    path[i] = top;
+                }
+            }
+        }
+
+        if (q.empty()) {
+            cout << "No" << endl;
+        } else {
+            cout << "Yes" << endl;
+            // 打印路径，但是是逆序打印的
+            // while (end != 0) {
+            //     cout << vertics[end].m_name << " ";
+            //     end = path[end];
+            // }
+            showPath(end, path);
+            cout << endl;
+        }
+    }
 
     
 private:
@@ -102,6 +140,13 @@ private:
             dfs(no, visit);
         }
     }
+    void showPath(int end, vector<int> &path) {
+        if (end == 0) {
+            return;
+        }
+        showPath(path[end], path);
+        cout << vertics[end].m_name << " ";
+    }
 };
 
 int main()
@@ -111,5 +156,6 @@ int main()
     graph.show();
     graph.dfs();
     graph.bfs();
+    graph.shortPath(1, 7);
     return 0;
 }

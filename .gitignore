@@ -2,7 +2,7 @@
 main
 
 *.d
-
+a.out
 # Compiled Object files
 *.slo
 *.lo
