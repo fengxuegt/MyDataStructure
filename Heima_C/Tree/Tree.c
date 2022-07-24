@@ -19,6 +19,7 @@
 
 #include<stdlib.h>
 #include<stdio.h>
+#include"seqStack.h"
 
 typedef struct TreeNode {
     char data;
@@ -55,7 +56,6 @@ void postOrder(TreeNode *root) {
 
 // 求树的叶子数量， 叶子的左右孩子都是NULL
 void calLeaves(TreeNode *root, int *num) {
-    int i = 0;
     if (!root) {
         return;
     }
@@ -104,7 +104,7 @@ void destroyTree(TreeNode *root) {
     }
     destroyTree(root->left);
     destroyTree(root->right);
-    printf("%c is freed\n", root->data);
+    // printf("%c is freed\n", root->data);
     free(root);
 }
 
@@ -120,11 +120,52 @@ void destroyTree(TreeNode *root) {
             将该节点的右子树、左子树、根节点压入到栈中
             执行下一次循环
 */
-void preTraverse()
+
+
+void preTraverse(TreeNode *root)
 {
-    
+    if (root == NULL) {
+        return;
+    }
+    SeqStack stack = init_SeqStack();
+    push_SeqStack(stack, root);
+    while (size_SeqStack(stack) > 0) {
+        TreeNode *tmp = top_SeqStack(stack);
+        printf("%c ", tmp->data);
+        pop_SeqStack(stack);
+        if (tmp->right) {
+            push_SeqStack(stack, tmp->right);
+        }
+        if (tmp->left) {
+            push_SeqStack(stack, tmp->left);
+        }
+
+    }
 }
 
+void midTraverse(TreeNode *root)
+{
+    if (root == NULL) {
+        return;
+    }
+    SeqStack st = init_SeqStack();
+    while (root || size_SeqStack(st) > 0) {
+        if (root) {
+            push_SeqStack(st, root);
+            root = root->left;
+        } else {
+            TreeNode *top = top_SeqStack(st);
+            printf("%c ", top->data);
+            pop_SeqStack(st);
+            root = top->right;
+        }
+    }
+}
+
+void postTraverse(TreeNode *root)
+{
+
+}
 
 int main()
 {
@@ -146,25 +187,36 @@ int main()
     nodeG.left = &nodeH;
     TreeNode *mid = &nodeA;
     TreeNode *post = &nodeA;
+    printf("===============preOrder=================\n");
     preOrder(&nodeA);
     printf("\n");
+    printf("===============midOrder=================\n");
     midOrder(&nodeA);
     printf("\n");
+    printf("===============postOrder=================\n");
     postOrder(post);
     printf("\n");
 
     // calLeaves
     int num = 0;
+    printf("===============callLeaves================\n");
     calLeaves(&nodeA, &num);
     printf("Leaves: %d\n", num);
-
+    printf("===============Height====================\n");
     printf("Height: %d\n", getHeight(&nodeA));
 
     TreeNode *newTree = copyTree(&nodeA);
     preOrder(newTree);
     printf("\n");
+    // destroyTree(newTree);
+    // getchar();
+
+    printf("===============NoRecursion=================\n");
+    printf("pre\n");
+    preTraverse(newTree);
+    printf("mid\n");
+    midTraverse(newTree);
     destroyTree(newTree);
-    getchar();
     return 0;
 }
 
